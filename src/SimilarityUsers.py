@@ -80,46 +80,55 @@ class SimilarityPolarity(SimilarityFunctionInterface):
         mixedB = self.data.loc[self.data['userId'] == B]['mixed'].apply(eval).to_list()[0]
         
         positive_sim = 0
-        i = 0
-        for art1 in positiveA:
-            max_pos = 0
-            for art2 in positiveB:
-        #         positive_sim += self.artworks_sim[art1][art2]
-        #         i += 1
-        # positive_sim /= i if i > 0 else 1
-                max_pos = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_pos else max_pos
-            positive_sim += max_pos
-        
-        max_aux = len(positiveA) if len(positiveA) > len(positiveB) else len(positiveB)
-        positive_sim = (positive_sim / max_aux) if max_aux > 0 else 1
+        if set(positiveA) == set(positiveB):
+            positive_sim = 1
+        else:
+            i = 0
+            for art1 in positiveA:
+                # max_pos = 0
+                for art2 in positiveB:
+                    positive_sim += self.artworks_sim[art1][art2]
+                    i += 1
+            positive_sim /= i if i > 0 else 1
+                    # max_pos = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_pos else max_pos
+                # positive_sim += max_pos
+
+            # max_aux = len(positiveA) if len(positiveA) > len(positiveB) else len(positiveB)
+            # positive_sim = (positive_sim / max_aux) if max_aux > 0 else 1
         
         negative_sim = 0
-        i = 0
-        for art1 in negativeA:
-            max_neg = 0
-            for art2 in negativeB:
-        #         negative_sim += self.artworks_sim[art1][art2]
-        #         i += 1
-        # negative_sim /= i if i > 0 else 1
-                max_neg = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_neg else max_neg
-            negative_sim += max_neg
-        
-        max_aux = len(negativeA) if len(negativeA) > len(negativeB) else len(negativeB)
-        negative_sim = (negative_sim / max_aux) if max_aux > 0 else 1
+        if set(negativeA) == set(negativeB):
+            negative_sim = 1
+        else:
+            i = 0
+            for art1 in negativeA:
+                # max_neg = 0
+                for art2 in negativeB:
+                    negative_sim += self.artworks_sim[art1][art2]
+                    i += 1
+            negative_sim /= i if i > 0 else 1
+                    # max_neg = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_neg else max_neg
+                # negative_sim += max_neg
+
+            # max_aux = len(negativeA) if len(negativeA) > len(negativeB) else len(negativeB)
+            # negative_sim = (negative_sim / max_aux) if max_aux > 0 else 1
         
         mixed_sim = 0
-        i = 0
-        for art1 in mixedA:
-            max_mix = 0
-            for art2 in mixedB:
-        #         mixed_sim += self.artworks_sim[art1][art2]
-        #         i += 1
-        # mixed_sim /= i if i > 0 else 1
-                max_mix = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_mix else max_mix
-            mixed_sim += max_mix
+        if set(mixedA) == set(mixedB):
+            mixed_sim = 1
+        else:
+            i = 0
+            for art1 in mixedA:
+                # max_mix = 0
+                for art2 in mixedB:
+                    mixed_sim += self.artworks_sim[art1][art2]
+                    i += 1
+            mixed_sim /= i if i > 0 else 1
+                    # max_mix = self.artworks_sim[art1][art2] if self.artworks_sim[art1][art2] > max_mix else max_mix
+                # mixed_sim += max_mix
         
-        max_aux = len(mixedA) if len(mixedA) > len(mixedB) else len(mixedB)
-        mixed_sim = (mixed_sim / max_aux) if max_aux > 0 else 1
+        # max_aux = len(mixedA) if len(mixedA) > len(mixedB) else len(mixedB)
+        # mixed_sim = (mixed_sim / max_aux) if max_aux > 0 else 1
         
         return (positive_sim * self.positive_weight) + (negative_sim * self.negative_weight) + (mixed_sim * self.mixed_weight)
         
