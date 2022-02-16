@@ -16,11 +16,11 @@ class GephiVisualization:
 
         # Cargamos los usuarios como nodos en Gephi
         self.nodes = {}
-
+        
         for u in users:
             node = graph.Node(u[0], size=100)
-
-            if users_properties != None:
+            
+            if users_properties is not None:
                 for i in range(1, len(u)):
                     node.property[users_properties[i-1]] = u[i]
 
