@@ -6,7 +6,11 @@ from src.SimilarityFunctionInterface import *
 USERS_CSV = 'data/Prado_users.csv'
 USERS_SCALED_CSV = 'data/Prado_users_scaled.csv'
 USERS_EMOTIONS_CSV = 'data/Prado_users_emotions.csv'
-USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_emotions_scaled.csv'
+# USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_emotions_scaled.csv'
+
+## USERS_INDIVIDUO_EXPLICADOR
+USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_individuo_explicador.csv'
+##
 
 class SimilarityAge(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
