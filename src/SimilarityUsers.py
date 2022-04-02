@@ -5,7 +5,7 @@ from src.SimilarityFunctionInterface import *
 
 USERS_CSV = 'data/Prado_users.csv'
 USERS_SCALED_CSV = 'data/Prado_users_scaled.csv'
-USERS_EMOTIONS_CSV = 'data/Prado_users_emotions_OnePolarity.csv'
+USERS_EMOTIONS_CSV = 'data/Prado_users_emotions_scaled_OnePolarity.csv'
 # USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_emotions_scaled.csv'
 
 ## USERS_INDIVIDUO_EXPLICADOR
@@ -49,7 +49,7 @@ class SimilarityCountry(SimilarityFunctionInterface):
 ###################################################
 class SimilarityDemographic(SimilarityFunctionInterface):
     """Compute similarity between users (by demographic)"""
-    def __init__(self, age_index, country_weight=0.3, age_weight=0.5, gender_weight=0.2, data_csv=USERS_EMOTIONS_SCALED_CSV):
+    def __init__(self, age_index, country_weight=0.3, age_weight=0.5, gender_weight=0.2, data_csv=USERS_EMOTIONS_CSV):
         self.country_weight = country_weight
         self.age_weight = age_weight
         self.gender_weight = gender_weight
@@ -67,7 +67,7 @@ class SimilarityDemographic(SimilarityFunctionInterface):
 ######################################################    
 class SimilarityPolarity(SimilarityFunctionInterface):
     """Compute similarity between users (by artwork tastes)"""
-    def __init__(self, artworks_sim, positive_weight=0.4, negative_weight=0.4, mixed_weight=0.2, data_csv=USERS_EMOTIONS_SCALED_CSV):
+    def __init__(self, artworks_sim, positive_weight=0.4, negative_weight=0.4, mixed_weight=0.2, data_csv=USERS_EMOTIONS_CSV):
         self.positive_weight = positive_weight
         self.negative_weight = negative_weight
         self.mixed_weight = mixed_weight
