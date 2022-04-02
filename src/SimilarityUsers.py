@@ -14,7 +14,7 @@ USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_individuo_explicador.csv'
 
 class SimilarityAge(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, age_index, data_csv=USERS_EMOTIONS_SCALED_CSV):
+    def __init__(self, age_index, data_csv=USERS_EMOTIONS_CSV):
         self.age_index = age_index
         self.data = pd.read_csv(data_csv)
         
@@ -26,7 +26,7 @@ class SimilarityAge(SimilarityFunctionInterface):
     
 class SimilarityGender(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, data_csv=USERS_EMOTIONS_SCALED_CSV):
+    def __init__(self, data_csv=USERS_EMOTIONS_CSV):
         self.data = pd.read_csv(data_csv)
       
     def computeSimilarity(self, A, B):
@@ -37,7 +37,7 @@ class SimilarityGender(SimilarityFunctionInterface):
     
 class SimilarityCountry(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, data_csv=USERS_EMOTIONS_SCALED_CSV):
+    def __init__(self, data_csv=USERS_EMOTIONS_CSV):
         self.data = pd.read_csv(data_csv)
         
     def computeSimilarity(self, A, B):
