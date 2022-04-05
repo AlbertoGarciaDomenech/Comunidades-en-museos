@@ -151,3 +151,5 @@ class SimilarityUsers(SimilarityFunctionInterface):
         demog_sim = SimilarityDemographic(self.age_index).computeSimilarity(A, B)
         artw_sim = SimilarityPolarity(self.artworks_sim).computeSimilarity(A, B)                                                
         return (self.demog_weight * demog_sim) + (self.artw_weight * artw_sim)
+    
+    
