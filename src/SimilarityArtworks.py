@@ -6,11 +6,11 @@ import colorsys
 import math
 from src.SimilarityFunctionInterface import *
 
-ARTWORKS_CSV = 'data/Prado_artworks_wikidata.csv'
+# ARTWORKS_CSV = 'data/Prado_artworks_wikidata.csv'
 
 class SimilarityArtist(SimilarityFunctionInterface):
     """Compute similarity between artworks (by artist)"""
-    def __init__(self, data_csv=ARTWORKS_CSV):
+    def __init__(self, data_csv):
         self.data = pd.read_csv(data_csv)
     
     def computeSimilarity(self, A, B):

@@ -3,21 +3,30 @@ import numpy as np
 import math
 from src.SimilarityFunctionInterface import *
 
-USERS_CSV = 'data/Prado_users.csv'
-USERS_SCALED_CSV = 'data/Prado_users_scaled.csv'
-USERS_EMOTIONS_CSV = 'data/Prado_users_emotions_scaled_OnePolarity.csv'
-# USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_emotions_scaled.csv'
+COUNTRIES_CSV = "data/countries_of_the_world.csv"
 
-## USERS_INDIVIDUO_EXPLICADOR
-USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_individuo_explicador.csv'
-##
+# USERS_CSV = 'data/Prado_users.csv'
+# USERS_SCALED_CSV = 'data/Prado_users_scaled.csv'
+# USERS_EMOTIONS_CSV = 'data/Prado_users_emotions_scaled_OnePolarity.csv'
+# # USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_emotions_scaled.csv'
+
+# ## USERS_INDIVIDUO_EXPLICADOR
+# USERS_EMOTIONS_SCALED_CSV = 'data/Prado_users_individuo_explicador.csv'
+# ##
 
 class SimilarityAge(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, age_index, data_csv=USERS_EMOTIONS_CSV):
-        self.age_index = age_index
-        self.data = pd.read_csv(data_csv)
+    def __init__(self, data_users):
+        self.data = data_users
+        self.age_index = 1
+        self.preprocess()
         
+    def preprocess(self):
+        for age_range in self.data.sort_values(by=['age'])['age'].unique():
+            self.data = self.data.replace(age_range, self.age_index)
+            self.age_index += 1
+        self.age_index -=1
+    
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFuntionInterface.computeSimilarity()"""
         ageA = self.data.loc[self.data['userId'] == A]['age'].to_list()[0]
@@ -26,8 +35,8 @@ class SimilarityAge(SimilarityFunctionInterface):
     
 class SimilarityGender(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, data_csv=USERS_EMOTIONS_CSV):
-        self.data = pd.read_csv(data_csv)
+    def __init__(self, data_users):
+        self.data = data_users
       
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFuntionInterface.computeSimilarity()"""
@@ -37,8 +46,8 @@ class SimilarityGender(SimilarityFunctionInterface):
     
 class SimilarityCountry(SimilarityFunctionInterface):
     """Compute similarity between users (by age)"""
-    def __init__(self, data_csv=USERS_EMOTIONS_CSV):
-        self.data = pd.read_csv(data_csv)
+    def __init__(self, data_users):
+        self.data = data_users
         
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFuntionInterface.computeSimilarity()"""
@@ -46,33 +55,54 @@ class SimilarityCountry(SimilarityFunctionInterface):
         countryB = self.data.loc[self.data['userId'] == B]['country'].to_list()[0]
         return countryA == countryB
 
+class SimilarityRegion(SimilarityFunctionInterface):
+    """Compute similarity between users (by age)"""
+    def __init__(self, data_users):
+        self.data = data_users
+        self.preprocess()
+        
+    def preprocess(self):
+        """Replace country by its region"""
+        regions = pd.read_csv(COUNTRIES_CSV).filter(items = ['Country', 'Region'])
+        for country in self.data.country.unique():
+            if country != 'Other':
+                self.data = self.data.replace(country, regions.loc[regions['Country'] == country]['Region'])
+        
+    def computeSimilarity(self, A, B):
+        """Overrides SimilarityFuntionInterface.computeSimilarity()"""
+        regionA = self.data.loc[self.data['userId'] == A]['country'].to_list()[0]
+        regionB = self.data.loc[self.data['userId'] == B]['country'].to_list()[0]
+        return regionA == regionB
+    
 ###################################################
 class SimilarityDemographic(SimilarityFunctionInterface):
     """Compute similarity between users (by demographic)"""
-    def __init__(self, age_index, country_weight=0.3, age_weight=0.5, gender_weight=0.2, data_csv=USERS_EMOTIONS_CSV):
+    def __init__(self, data_users, country_weight=0.3, age_weight=0.5, gender_weight=0.2):
+        self.data_users = data_users
         self.country_weight = country_weight
         self.age_weight = age_weight
         self.gender_weight = gender_weight
-        self.age_index = age_index
-        self.data = pd.read_csv(data_csv)
+        self.countrySim = SimilarityRegion(self.data_users)
+        self.ageSim = SimilarityAge(self.data_users)
+        self.genderSim = SimilarityGender(self.data_users)
     
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFuntionInterface.computeSimilarity()"""
-        country_sim = SimilarityCountry().computeSimilarity(A, B)
-        age_sim = SimilarityAge(self.age_index).computeSimilarity(A, B)
-        gender_sim = SimilarityGender().computeSimilarity(A, B)
+        country_sim = self.countrySim.computeSimilarity(A, B)
+        age_sim = self.ageSim.computeSimilarity(A, B)
+        gender_sim = self.genderSim.computeSimilarity(A, B)
                        
         return (country_sim*self.country_weight) + (age_sim*self.age_weight) + (gender_sim*self.gender_weight)
     
 ######################################################    
 class SimilarityPolarity(SimilarityFunctionInterface):
     """Compute similarity between users (by artwork tastes)"""
-    def __init__(self, artworks_sim, positive_weight=0.4, negative_weight=0.4, mixed_weight=0.2, data_csv=USERS_EMOTIONS_CSV):
+    def __init__(self, data_users, artworks_sim, positive_weight=0.4, negative_weight=0.4, mixed_weight=0.2):
         self.positive_weight = positive_weight
         self.negative_weight = negative_weight
         self.mixed_weight = mixed_weight
         self.artworks_sim = artworks_sim
-        self.data = pd.read_csv(data_csv)
+        self.data = data_users
     
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
@@ -138,18 +168,47 @@ class SimilarityPolarity(SimilarityFunctionInterface):
         
         
 ######################################################    
+# class SimilarityUsers(SimilarityFunctionInterface):
+#     """Compute similarity between users"""
+#     def __init__(self, data_users, artworks_sim, demog_weight = 0.5, artw_weight = 0.5):
+#         self.data_users = pd.read_csv(data_users)
+#         self.demog_weight = demog_weight
+#         self.artw_weight = artw_weight
+#         self.artworks_sim = artworks_sim
+        
+#     def computeSimilarity(self, A, B):
+#         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
+#         demog_sim = SimilarityDemographic(data_users).computeSimilarity(A, B)
+#         artw_sim = SimilarityPolarity(self.artworks_sim).computeSimilarity(A, B)                                                
+#         return (self.demog_weight * demog_sim) + (self.artw_weight * artw_sim)
+    
+    
+########################---------------------------------------------------##############################
 class SimilarityUsers(SimilarityFunctionInterface):
     """Compute similarity between users"""
-    def __init__(self, age_index, artworks_sim, demog_weight = 0.5, artw_weight = 0.5):
+    def __init__(self, data_users, artworks_sim, demog_weight = 0.5, artw_weight = 0.5):
+        self.data_users = data_users
         self.demog_weight = demog_weight
         self.artw_weight = artw_weight
-        self.age_index = age_index
         self.artworks_sim = artworks_sim
+        self.demogSim = SimilarityDemographic(self.data_users)
+    
+    def getSimilarityMatrix(self):
+        users_matrix = []
+        for i in range(0, len(self.data_users)):
+            sim_list = []
+            for j in range(0, len(self.data_users)):
+                sim = self.computeSimilarity(self.data_users.loc(0)[i]['userId'], self.data_users.loc(0)[j]['userId'])
+                if sim >= 0:
+                    sim_list.append(sim)
+                else:
+                    sim_list.append(0)
+            users_matrix.append(sim_list)
+        
+        return pd.DataFrame(users_matrix, index = [i for i in self.data_users['userId']], columns = [i for i in self.data_users['userId']])
         
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
-        demog_sim = SimilarityDemographic(self.age_index).computeSimilarity(A, B)
-        artw_sim = SimilarityPolarity(self.artworks_sim).computeSimilarity(A, B)                                                
+        demog_sim = self.demogSim.computeSimilarity(A, B)
+        artw_sim = SimilarityPolarity(self.data_users, self.artworks_sim).computeSimilarity(A, B)                                                
         return (self.demog_weight * demog_sim) + (self.artw_weight * artw_sim)
-    
-    

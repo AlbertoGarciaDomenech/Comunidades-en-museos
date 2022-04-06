@@ -10,7 +10,7 @@ class AverageUser:
             clusters.append(data[data['cluster'] == c])
         
         newUsers = []
-        for i, c in enumerate(clusters):
+        for c in clusters:
             averageUser = {'userId' : 0}
             for atr in c.columns:
                 if atr not in ['userId', 'cluster', 'positive', 'negative', 'mixed']:
@@ -21,7 +21,7 @@ class AverageUser:
                     artworks = collections.Counter([artw for usr in c[atr] for artw in usr])
                     averageUser[atr] = [item[0] for item in artworks.most_common(n_artworks)]
                         
-            averageUser['cluster'] = i
+            averageUser['cluster'] = c.cluster.iloc[0]
             newUsers.append(averageUser)
             
         return pd.DataFrame(newUsers)
