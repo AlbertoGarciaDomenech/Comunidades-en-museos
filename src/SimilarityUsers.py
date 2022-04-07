@@ -106,12 +106,21 @@ class SimilarityPolarity(SimilarityFunctionInterface):
     
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
-        positiveA = self.data.loc[self.data['userId'] == A]['positive'].apply(eval).to_list()[0]
-        positiveB = self.data.loc[self.data['userId'] == B]['positive'].apply(eval).to_list()[0]
-        negativeA = self.data.loc[self.data['userId'] == A]['negative'].apply(eval).to_list()[0]
-        negativeB = self.data.loc[self.data['userId'] == B]['negative'].apply(eval).to_list()[0]
-        mixedA = self.data.loc[self.data['userId'] == A]['mixed'].apply(eval).to_list()[0]
-        mixedB = self.data.loc[self.data['userId'] == B]['mixed'].apply(eval).to_list()[0]
+        
+        ###################### TODO: REVISAR ####################################
+        # positiveA = self.data.loc[self.data['userId'] == A]['positive'].apply(eval).to_list()[0]
+        # positiveB = self.data.loc[self.data['userId'] == B]['positive'].apply(eval).to_list()[0]
+        # negativeA = self.data.loc[self.data['userId'] == A]['negative'].apply(eval).to_list()[0]
+        # negativeB = self.data.loc[self.data['userId'] == B]['negative'].apply(eval).to_list()[0]
+        # mixedA = self.data.loc[self.data['userId'] == A]['mixed'].apply(eval).to_list()[0]
+        # mixedB = self.data.loc[self.data['userId'] == B]['mixed'].apply(eval).to_list()[0]
+        positiveA = self.data.loc[self.data['userId'] == A]['positive'].to_list()[0]
+        positiveB = self.data.loc[self.data['userId'] == B]['positive'].to_list()[0]
+        negativeA = self.data.loc[self.data['userId'] == A]['negative'].to_list()[0]
+        negativeB = self.data.loc[self.data['userId'] == B]['negative'].to_list()[0]
+        mixedA = self.data.loc[self.data['userId'] == A]['mixed'].to_list()[0]
+        mixedB = self.data.loc[self.data['userId'] == B]['mixed'].to_list()[0]
+        
         
         positive_sim = 0
         if set(positiveA) == set(positiveB):
@@ -192,12 +201,13 @@ class SimilarityUsers(SimilarityFunctionInterface):
         self.artw_weight = artw_weight
         self.artworks_sim = artworks_sim
         self.demogSim = SimilarityDemographic(self.data_users)
+        self.polSim = SimilarityPolarity(self.data_users, self.artworks_sim)
     
     def getSimilarityMatrix(self):
         users_matrix = []
         for i in range(0, len(self.data_users)):
             sim_list = []
-            for j in range(0, len(self.data_users)):
+            for j in range(0, len(self.data_users)): 
                 sim = self.computeSimilarity(self.data_users.loc(0)[i]['userId'], self.data_users.loc(0)[j]['userId'])
                 if sim >= 0:
                     sim_list.append(sim)
@@ -210,5 +220,5 @@ class SimilarityUsers(SimilarityFunctionInterface):
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
         demog_sim = self.demogSim.computeSimilarity(A, B)
-        artw_sim = SimilarityPolarity(self.data_users, self.artworks_sim).computeSimilarity(A, B)                                                
+        artw_sim = self.polSim.computeSimilarity(A, B)                                                
         return (self.demog_weight * demog_sim) + (self.artw_weight * artw_sim)

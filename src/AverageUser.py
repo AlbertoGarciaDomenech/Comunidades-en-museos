@@ -4,14 +4,18 @@ import collections
 
 class AverageUser:
     
-    def computeAverageUser(self, data, n_artworks=3):
+    def __init__(self, data):
+        self.data = data
+    
+    def computeAverageUser(self, n_artworks=3):
         clusters = []
-        for c in data.cluster.unique():
-            clusters.append(data[data['cluster'] == c])
+        for c in self.data.cluster.unique():
+            clusters.append(self.data[self.data['cluster'] == c])
         
         newUsers = []
+        newId = self.data['userId'][len(self.data['userId']) - 1] + 1
         for c in clusters:
-            averageUser = {'userId' : 0}
+            averageUser = {'userId' : 'expl'+str(newId)}
             for atr in c.columns:
                 if atr not in ['userId', 'cluster', 'positive', 'negative', 'mixed']:
                     averageUser[atr] = c[atr].mode()[0] ###### NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO (pueden salir varios)         
@@ -23,5 +27,6 @@ class AverageUser:
                         
             averageUser['cluster'] = c.cluster.iloc[0]
             newUsers.append(averageUser)
+            newId += 1
             
         return pd.DataFrame(newUsers)
