@@ -12,7 +12,7 @@ class UsersClustering:
         """Compute Davies Bouldin score, and returns the number of clusters with the lowest score"""
         davies_bouldin = np.zeros(max_clusters-2)
         for k in range(2, max_clusters):
-            km = KMedoids(metric='precomputed', n_clusters=k)
+            km = KMedoids(metric='precomputed', n_clusters=k, init='k-medoids++')
             km.fit(self.data)
             davies_bouldin[k-2] = davies_bouldin_score(self.data, km.labels_)
 
@@ -23,7 +23,7 @@ class UsersClustering:
         if n_clusters is None:
             n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
         
-        kmedoids = KMedoids(metric='precomputed', n_clusters=n_clusters)
+        kmedoids = KMedoids(metric='precomputed', n_clusters=n_clusters, init='k-medoids++')
         kmedoids.fit(self.data)
         
         #TODO: Tupla (id, label)

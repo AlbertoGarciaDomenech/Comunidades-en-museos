@@ -19,6 +19,7 @@ class AverageUser:
             for atr in c.columns:
                 if atr not in ['userId', 'cluster', 'positive', 'negative', 'mixed']:
                     averageUser[atr] = c[atr].mode()[0] ###### NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO (pueden salir varios)         
+                    print(c[atr].value_counts())
                     
             for atr in c.columns:
                 if atr in ['positive', 'negative', 'mixed']:

@@ -77,7 +77,7 @@ class SimilarityRegion(SimilarityFunctionInterface):
 ###################################################
 class SimilarityDemographic(SimilarityFunctionInterface):
     """Compute similarity between users (by demographic)"""
-    def __init__(self, data_users, country_weight=0.3, age_weight=0.5, gender_weight=0.2):
+    def __init__(self, data_users, country_weight=0.33, age_weight=0.33, gender_weight=0.33):
         self.data_users = data_users
         self.country_weight = country_weight
         self.age_weight = age_weight
@@ -106,14 +106,6 @@ class SimilarityPolarity(SimilarityFunctionInterface):
     
     def computeSimilarity(self, A, B):
         """Overrides SimilarityFunctionInterface.computeSimilarity()"""
-        
-        ###################### TODO: REVISAR ####################################
-        # positiveA = self.data.loc[self.data['userId'] == A]['positive'].apply(eval).to_list()[0]
-        # positiveB = self.data.loc[self.data['userId'] == B]['positive'].apply(eval).to_list()[0]
-        # negativeA = self.data.loc[self.data['userId'] == A]['negative'].apply(eval).to_list()[0]
-        # negativeB = self.data.loc[self.data['userId'] == B]['negative'].apply(eval).to_list()[0]
-        # mixedA = self.data.loc[self.data['userId'] == A]['mixed'].apply(eval).to_list()[0]
-        # mixedB = self.data.loc[self.data['userId'] == B]['mixed'].apply(eval).to_list()[0]
         positiveA = self.data.loc[self.data['userId'] == A]['positive'].to_list()[0]
         positiveB = self.data.loc[self.data['userId'] == B]['positive'].to_list()[0]
         negativeA = self.data.loc[self.data['userId'] == A]['negative'].to_list()[0]
@@ -204,17 +196,19 @@ class SimilarityUsers(SimilarityFunctionInterface):
         self.polSim = SimilarityPolarity(self.data_users, self.artworks_sim)
     
     def getSimilarityMatrix(self):
-        users_matrix = []
-        for i in range(0, len(self.data_users)):
-            sim_list = []
-            for j in range(0, len(self.data_users)): 
-                sim = self.computeSimilarity(self.data_users.loc(0)[i]['userId'], self.data_users.loc(0)[j]['userId'])
+        users_matrix = np.zeros((len(self.data_users), len(self.data_users)))
+        i = 0
+        for a in range(0, len(self.data_users)):
+            j = 0
+            for b in range(0, len(self.data_users)): 
+                sim = self.computeSimilarity(self.data_users.loc(0)[a]['userId'], self.data_users.loc(0)[b]['userId'])
                 if sim >= 0:
-                    sim_list.append(sim)
+                    users_matrix[i][j] = sim
                 else:
-                    sim_list.append(0)
-            users_matrix.append(sim_list)
-        
+                    users_matrix[i][j] = 0
+                j += 1
+            i += 1
+
         return pd.DataFrame(users_matrix, index = [i for i in self.data_users['userId']], columns = [i for i in self.data_users['userId']])
         
     def computeSimilarity(self, A, B):
