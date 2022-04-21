@@ -58,11 +58,13 @@ class AverageUser:
                 print("Cluster: ", cluster)
                 print("\tIndividuos: ", len(self.data[self.data.cluster == cluster]))
                 for atr, perc in d.items():
+                    if atr not in self.atributes_users:
+                        continue
                     print("\t" + atr,":")
                     for x in perc:
                         print("\t\t",  x[0], "(", x[1], "%)")
                 
-                for polarity in ['positive', 'negative', 'mixed']:
+                for polarity in np.intersect1d(self.atributes_users,['positive', 'negative', 'mixed']):
                     print("\t--Top",self.n_artworks, " " + polarity + "--")
                     if(len(self.users_df[self.users_df['cluster'] == cluster][polarity]) == 0):
                         print("0 artworks found with", polarity, " polarity")
