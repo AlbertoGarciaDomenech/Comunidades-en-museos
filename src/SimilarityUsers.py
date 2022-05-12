@@ -34,6 +34,21 @@ class SimilarityUsers():
             ageA = self.data.loc[self.data['userId'] == A]['age'].to_list()[0]
             ageB = self.data.loc[self.data['userId'] == B]['age'].to_list()[0]
             return 1 - (1 / (self.age_index - 1) * abs(ageA - ageB))
+    class SimilarityAgeNotInterval(SimilarityFunctionInterface):
+        """Compute similarity between users (by age)"""
+        def __init__(self, data_users, artworks_sim):
+            self.data = data_users
+            self.preprocess()
+
+        def preprocess(self):
+            self.age_index -= max(self.data['age']) - min (self.data['age'])
+
+        def computeSimilarity(self, A, B):
+            """Overrides SimilarityFuntionInterface.computeSimilarity()"""
+            ageA = self.data.loc[self.data['userId'] == A]['age'].to_list()[0]
+            ageB = self.data.loc[self.data['userId'] == B]['age'].to_list()[0]
+            return 1 - (1 / (self.age_index) * abs(ageA - ageB))
+            
 
     class SimilarityGender(SimilarityFunctionInterface):
         """Compute similarity between users (by age)"""
