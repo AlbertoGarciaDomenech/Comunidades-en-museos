@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn_extra.cluster import KMedoids
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import davies_bouldin_score
 
 class UsersClustering:    
@@ -28,3 +29,13 @@ class UsersClustering:
         
         #TODO: Tupla (id, label)
         return kmedoids.labels_
+    
+    def agglomerativeFromMatrix(self, n_clusters=None, max_clusters=11):
+        """Recieves a similarity matrix, runs Kmedoids algorithm on those elemnts and returns the cluster asigned to each element"""
+        if n_clusters is None:
+            n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
+        agg = AgglomerativeClustering(n_clusters = n_clusters, affinity='precomputed', distance_threshold = None, linkage = 'average')
+        agg.fit(self.data)
+        
+        #TODO: Tupla (id, label)
+        return agg.labels_
