@@ -34,6 +34,7 @@ class SimilarityUsers():
             ageA = self.data.loc[self.data['userId'] == A]['age'].to_list()[0]
             ageB = self.data.loc[self.data['userId'] == B]['age'].to_list()[0]
             return 1 - (abs(ageA - ageB) / (self.age_index - 1))
+        
     class SimilarityAgeNotInterval(SimilarityFunctionInterface):
         """Compute similarity between users (by age)"""
         def __init__(self, data_users, artworks_sim):
@@ -49,7 +50,6 @@ class SimilarityUsers():
             ageB = self.data.loc[self.data['userId'] == B]['age'].to_list()[0]
             return 1 - (abs(ageA - ageB) / (self.age_index))
             
-
     class SimilarityGender(SimilarityFunctionInterface):
         """Compute similarity between users (by age)"""
         def __init__(self, data_users, artworks_sim):
@@ -102,18 +102,31 @@ class SimilarityUsers():
             listA = self.data.loc[self.data['userId'] == A]['positive'].to_list()[0]
             listB = self.data.loc[self.data['userId'] == B]['positive'].to_list()[0]
             sim = 0
-            if set(listA) == set(listB):
+            longest_list, shortest_list = (listA,listB) if len(listA) >= len(listB) else (listB,listA)
+            for art1 in longest_list:
+                max_sim = 0
+                for art2 in shortest_list:
+                    if self.artworks_sim[art1][art2] > max_sim:
+                        max_sim = self.artworks_sim[art1][art2]
+                sim += max_sim
+            
+            total_art = len(set(listA).union(set(listB))) 
+            if total_art > 0:
+                sim /= total_art
+            elif total_art == 0: # Ambas listas están vacías
                 sim = 1
-            else:
-                i = 0
-                for art1 in listA:
-                    # max_pos = 0
-                    for art2 in listB:
-                        sim += self.artworks_sim[art1][art2]
-                        i += 1
-                sim /= i if i > 0 else 1
             
             return sim
+#             if set(listA) == set(listB):
+#                 sim = 1
+#             else:
+#                 i = 0
+#                 for art1 in listA:
+#                     # max_pos = 0
+#                     for art2 in listB:
+#                         sim += self.artworks_sim[art1][art2]
+#                         i += 1
+#                 sim /= i if i > 0 else 1
             
             
     class SimilarityPolarityNegative(SimilarityFunctionInterface):
@@ -127,16 +140,19 @@ class SimilarityUsers():
             listA = self.data.loc[self.data['userId'] == A]['negative'].to_list()[0]
             listB = self.data.loc[self.data['userId'] == B]['negative'].to_list()[0]
             sim = 0
-            if set(listA) == set(listB):
+            longest_list, shortest_list = (listA,listB) if len(listA) >= len(listB) else (listB,listA)
+            for art1 in longest_list:
+                max_sim = 0
+                for art2 in shortest_list:
+                    if self.artworks_sim[art1][art2] > max_sim:
+                        max_sim = self.artworks_sim[art1][art2]
+                sim += max_sim
+            
+            total_art = len(set(listA).union(set(listB))) 
+            if total_art > 0:
+                sim /= total_art
+            elif total_art == 0: # Ambas listas están vacías
                 sim = 1
-            else:
-                i = 0
-                for art1 in listA:
-                    # max_pos = 0
-                    for art2 in listB:
-                        sim += self.artworks_sim[art1][art2]
-                        i += 1
-                sim /= i if i > 0 else 1
             
             return sim
         
@@ -151,16 +167,19 @@ class SimilarityUsers():
             listA = self.data.loc[self.data['userId'] == A]['mixed'].to_list()[0]
             listB = self.data.loc[self.data['userId'] == B]['mixed'].to_list()[0]
             sim = 0
-            if set(listA) == set(listB):
+            longest_list, shortest_list = (listA,listB) if len(listA) >= len(listB) else (listB,listA)
+            for art1 in longest_list:
+                max_sim = 0
+                for art2 in shortest_list:
+                    if self.artworks_sim[art1][art2] > max_sim:
+                        max_sim = self.artworks_sim[art1][art2]
+                sim += max_sim
+            
+            total_art = len(set(listA).union(set(listB))) 
+            if total_art > 0:
+                sim /= total_art
+            elif total_art == 0: # Ambas listas están vacías
                 sim = 1
-            else:
-                i = 0
-                for art1 in listA:
-                    # max_pos = 0
-                    for art2 in listB:
-                        sim += self.artworks_sim[art1][art2]
-                        i += 1
-                sim /= i if i > 0 else 1
             
             return sim
 

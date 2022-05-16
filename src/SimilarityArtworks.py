@@ -9,6 +9,7 @@ from src.SimilarityFunctionInterface import *
 # ARTWORKS_CSV = 'data/Prado_artworks_wikidata.csv'
 
 class SimilarityArtworks():
+    
     class SimilarityArtist(SimilarityFunctionInterface):
         """Compute similarity between artworks (by artist)"""
         def __init__(self, data_art):
@@ -47,7 +48,6 @@ class SimilarityArtworks():
             hsv_a = colorsys.rgb_to_hsv(rgb_a[0], rgb_a[1], rgb_a[2])
             hsv_b = colorsys.rgb_to_hsv(rgb_b[0], rgb_b[1], rgb_b[2])
 
-            ### Sacado de año anterior ###
             dh = min(abs(hsv_a[0]-hsv_b[0]), 360-abs(hsv_a[0]-hsv_b[0])) / 180.0
             ds = abs(hsv_a[1] - hsv_b[1])
             dv = abs(hsv_a[2] - hsv_b[2]) / 255.
