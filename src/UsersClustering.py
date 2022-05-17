@@ -24,7 +24,7 @@ class UsersClustering:
         if n_clusters is None:
             n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
         
-        kmedoids = KMedoids(metric='precomputed', n_clusters=n_clusters, init='k-medoids++')
+        kmedoids = KMedoids(metric='precomputed',method='pam', n_clusters=n_clusters, init='k-medoids++')
         kmedoids.fit(self.data)
         
         #TODO: Tupla (id, label)
