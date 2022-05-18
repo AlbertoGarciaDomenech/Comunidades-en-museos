@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import collections
+import json
 
 class AverageUser:
     
@@ -50,7 +51,7 @@ class AverageUser:
         category = collections.Counter([item for sublist in [self.artworks_info[self.artworks_info['ID'] == artw][atr].to_list() for artw in artworks] for item in sublist])
         if len(artists.most_common(1)) > 0:
             aux_dict["Most " + atr] = [(category.most_common(1)[0][0], artists.most_common(1)[0][1] / len(c) * 100)]
-    
+
     def printExplanation(self):
         if len(self.stats_dicts) != 0:
             for cluster, d in self.stats_dicts.items():
@@ -74,4 +75,65 @@ class AverageUser:
                             for col in self.artworks_info.columns:
                                 if col in self.atributes_artworks:
                                     print("\t\t\t" + col + ": " + self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])
-                    
+        
+    def returnExplanation(self):
+        explanation = {}
+        if len(self.stats_dicts) != 0:
+            for cluster, d in self.stats_dicts.items():
+                explanation[cluster] = ("<p>Individuos: "+ str(len(self.data[self.data.cluster == cluster])) + "</p>")
+                # print("\tIndividuos: ", len(self.data[self.data.cluster == cluster]))
+                for atr, perc in d.items():
+                    if atr not in self.atributes_users:
+                        continue
+                    explanation[cluster] += ("<p>" + str(atr) +":</p>")
+                    for x in perc:
+                        explanation[cluster] +=("<p>\t" +  str(x[0]) + "("+ str(x[1]) + "%)</p>")
+                
+                for polarity in np.intersect1d(self.atributes_users,['positive', 'negative', 'mixed']):
+                    explanation[cluster] +=("<p>\t--Top" + str(self.n_artworks) + " " + str(polarity) + "--</p>")
+                    if(len(self.users_df[self.users_df['cluster'] == cluster][polarity]) == 0):
+                        explanation[cluster] += ("<p>0 artworks found with" + str(polarity) + " polarity</p>")
+                    for artworks in self.users_df[self.users_df['cluster'] == cluster][polarity]:
+                        for art in artworks:
+                            explanation[cluster] += ("<p>\t\t\tTitle:" + str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0]) + "</p>")
+                            for col in self.artworks_info.columns:
+                                if col in self.atributes_artworks:
+                                    explanation[cluster] += ("<p>\t\t\t" + str(col) + ": " + str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])  + "</p>")
+        return explanation
+    def returnJSONExplanation(self):
+        explanation = {}
+        if len(self.stats_dicts) != 0:
+            for cluster, d in self.stats_dicts.items():
+                explanation[int(cluster)] = {}
+                explanation[int(cluster)]['usr'] = {}
+                # usr = explanation[cluster]['usr']
+                explanation[cluster]['usr']['Individuos'] = len(self.data[self.data.cluster == cluster])
+                # print("\tIndividuos: ", len(self.data[self.data.cluster == cluster]))
+                for atr, perc in d.items():
+                    if atr not in self.atributes_users:
+                        continue
+                    explanation[int(cluster)]['usr'][atr] = {} 
+                    # += ("<p>" + str(atr) +":</p>")
+                    for x in perc:
+                        explanation[int(cluster)]['usr'][atr][str(x[0])] = x[1]
+                        # explanation[cluster] +=("<p>\t" +  str(x[0]) + "("+ str(x[1]) + "%)</p>")
+                explanation[int(cluster)]['polarity'] = {}
+                # pol = explanation['polarity']
+                for polarity in np.intersect1d(self.atributes_users,['positive', 'negative', 'mixed']):
+                    explanation[int(cluster)]['polarity'][polarity] = [{} for i in range(len(self.users_df[self.users_df['cluster'] == cluster][polarity]))] 
+                    # print(explanation)
+                    # explanation[cluster] +=("<p>\t--Top" + str(self.n_artworks) + " " + str(polarity) + "--</p>")
+                    if not(len(self.users_df[self.users_df['cluster'] == cluster][polarity]) == 0):
+                        # explanation[cluster] += ("<p>0 artworks found with" + str(polarity) + " polarity</p>")
+                        for artworks in self.users_df[self.users_df['cluster'] == cluster][polarity]:
+                            i = 0
+                            for art in artworks:
+                                explanation[int(cluster)]['polarity'][polarity][i]= {'title': str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0])}
+                                # explanation[cluster] += ("<p>\t\t\tTitle:" + str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0]) + "</p>")
+                                for col in self.artworks_info.columns:
+                                    if col in self.atributes_artworks:
+                                         explanation[int(cluster)]['polarity'][polarity][i][col] = str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])
+
+                                        # explanation[cluster] += ("<p>\t\t\t" + str(col) + ": " + str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])  + "</p>")
+                            i +=1
+        return (json.dumps(explanation))
