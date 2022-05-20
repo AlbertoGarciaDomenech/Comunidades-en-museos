@@ -120,19 +120,20 @@ class AverageUser:
                 explanation[int(cluster)]['polarity'] = {}
                 # pol = explanation['polarity']
                 for polarity in np.intersect1d(self.atributes_users,['positive', 'negative', 'mixed']):
-                    explanation[int(cluster)]['polarity'][polarity] = [{} for i in range(len(self.users_df[self.users_df['cluster'] == cluster][polarity]))] 
-                    # print(explanation)
+                    explanation[int(cluster)]['polarity'][polarity] = [{} for i in range(len(self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]))] 
                     # explanation[cluster] +=("<p>\t--Top" + str(self.n_artworks) + " " + str(polarity) + "--</p>")
-                    if not(len(self.users_df[self.users_df['cluster'] == cluster][polarity]) == 0):
+                    if not(len(self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]) == 0):
+                        # explanation[int(cluster)]['polarity'][polarity] = "Not artworks found with this polarity"
                         # explanation[cluster] += ("<p>0 artworks found with" + str(polarity) + " polarity</p>")
-                        for artworks in self.users_df[self.users_df['cluster'] == cluster][polarity]:
-                            i = 0
-                            for art in artworks:
-                                explanation[int(cluster)]['polarity'][polarity][i]= {'title': str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0])}
-                                # explanation[cluster] += ("<p>\t\t\tTitle:" + str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0]) + "</p>")
-                                for col in self.artworks_info.columns:
-                                    if col in self.atributes_artworks:
-                                         explanation[int(cluster)]['polarity'][polarity][i][col] = str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])
+                        i = 0
+                        for artworks in self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]:
+                            
+                            # for art in artworks:
+                            explanation[int(cluster)]['polarity'][polarity][i]= {'title': str(self.artworks_info[self.artworks_info['ID'] == artworks]['Title'].to_list()[0])}
+                            # explanation[cluster] += ("<p>\t\t\tTitle:" + str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0]) + "</p>")
+                            for col in self.artworks_info.columns:
+                                if col in self.atributes_artworks:
+                                     explanation[int(cluster)]['polarity'][polarity][i][col] = str(self.artworks_info[self.artworks_info['ID'] == artworks][col].to_list()[0])
 
                                         # explanation[cluster] += ("<p>\t\t\t" + str(col) + ": " + str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])  + "</p>")
                             i +=1
