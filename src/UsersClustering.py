@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn_extra.cluster import KMedoids
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import davies_bouldin_score
+from sklearn.cluster import DBSCAN
 
 class UsersClustering:    
     
@@ -39,3 +40,13 @@ class UsersClustering:
         
         #TODO: Tupla (id, label)
         return agg.labels_
+
+    def dbscanFromMatrix(self, n_clusters=None, max_clusters=11):
+        """Recieves a similarity matrix, runs Kmedoids algorithm on those elemnts and returns the cluster asigned to each element"""
+        # if n_clusters is None:
+        #     n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
+        dbscan = DBSCAN( metric='precomputed' , eps = .1, min_samples = 7)
+        dbscan.fit(self.data)
+        
+        #TODO: Tupla (id, label)
+        return dbscan.labels_
