@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import collections
 import json
+import matplotlib.pyplot as plt
+import os
 
 class AverageUser:
     
@@ -11,6 +13,7 @@ class AverageUser:
         self.atributes_users = atributes_users
         self.atributes_artworks = atributes_artworks
         self.stats_dicts = {}
+        self.image_path = "cache/"
     
     def computeAverageUser(self, n_artworks=3):
         self.n_artworks = n_artworks
@@ -106,35 +109,49 @@ class AverageUser:
             for cluster, d in self.stats_dicts.items():
                 explanation[int(cluster)] = {}
                 explanation[int(cluster)]['usr'] = {}
-                # usr = explanation[cluster]['usr']
                 explanation[cluster]['usr']['Individuos'] = len(self.data[self.data.cluster == cluster])
-                # print("\tIndividuos: ", len(self.data[self.data.cluster == cluster]))
                 for atr, perc in d.items():
                     if atr not in self.atributes_users:
                         continue
                     explanation[int(cluster)]['usr'][atr] = {} 
-                    # += ("<p>" + str(atr) +":</p>")
                     for x in perc:
                         explanation[int(cluster)]['usr'][atr][str(x[0])] = x[1]
-                        # explanation[cluster] +=("<p>\t" +  str(x[0]) + "("+ str(x[1]) + "%)</p>")
                 explanation[int(cluster)]['polarity'] = {}
-                # pol = explanation['polarity']
                 for polarity in np.intersect1d(self.atributes_users,['positive', 'negative', 'mixed']):
                     explanation[int(cluster)]['polarity'][polarity] = [{} for i in range(len(self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]))] 
-                    # explanation[cluster] +=("<p>\t--Top" + str(self.n_artworks) + " " + str(polarity) + "--</p>")
                     if not(len(self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]) == 0):
-                        # explanation[int(cluster)]['polarity'][polarity] = "Not artworks found with this polarity"
-                        # explanation[cluster] += ("<p>0 artworks found with" + str(polarity) + " polarity</p>")
                         i = 0
                         for artworks in self.users_df[self.users_df['cluster'] == cluster][polarity].to_list()[0]:
-                            
-                            # for art in artworks:
                             explanation[int(cluster)]['polarity'][polarity][i]= {'title': str(self.artworks_info[self.artworks_info['ID'] == artworks]['Title'].to_list()[0])}
-                            # explanation[cluster] += ("<p>\t\t\tTitle:" + str(self.artworks_info[self.artworks_info['ID'] == art]['Title'].to_list()[0]) + "</p>")
                             for col in self.artworks_info.columns:
                                 if col in self.atributes_artworks:
                                      explanation[int(cluster)]['polarity'][polarity][i][col] = str(self.artworks_info[self.artworks_info['ID'] == artworks][col].to_list()[0])
 
-                                        # explanation[cluster] += ("<p>\t\t\t" + str(col) + ": " + str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])  + "</p>")
                             i +=1
         return (json.dumps(explanation))
+    
+    def computeInfographics(self):
+        
+        dir = os.getcwd() + "\\" + self.image_path
+        for f in os.listdir(dir):
+            os.remove(os.path.join(dir, f))
+        
+        if len(self.stats_dicts) != 0:
+            for cluster, d in self.stats_dicts.items():
+                info = self.data[self.data.cluster == cluster]
+                for atr,perc in d.items():
+                    if atr not in self.atributes_users:
+                        continue
+                    fig, ax = plt.subplots()
+                    
+                    names = info.groupby(atr).size().axes[0]
+                    values = info.groupby(atr).size().to_list()
+                    # bars = ax.bar(np.sort(names),np.sort(values))
+                    bars = ax.bar(names,values,color="cyan",edgecolor= "blue")
+                    ax.bar_label(bars)
+                    # plt.bar(np.sort(names),np.sort(values), width = 0.5)
+                    img_name = self.image_path + str(cluster) + "_" + str(atr) + ".png"
+                    plt.savefig(img_name)
+                    plt.clf()
+                    plt.close()
+        return
