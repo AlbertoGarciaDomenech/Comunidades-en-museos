@@ -83,7 +83,7 @@ class SimilarityUsers():
             regions = pd.read_csv(COUNTRIES_CSV).filter(items = ['Country', 'Region'])
             for country in self.data.country.unique():
                 if country != 'Other':
-                    self.data = self.data.replace(country, regions.loc[regions['Country'] == country]['Region'])
+                    self.data = self.data.replace(country, regions.loc[regions['Country'] == country]['Region'].to_list()[0])
 
         def computeSimilarity(self, A, B):
             """Overrides SimilarityFuntionInterface.computeSimilarity()"""

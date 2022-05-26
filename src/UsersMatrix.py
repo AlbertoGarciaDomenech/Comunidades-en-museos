@@ -4,11 +4,11 @@ from src.SimilarityUsers import SimilarityUsers
 
 class UsersMatrix():
     def __init__(self, data_users, artworks_sim, function_dict, weight_dict):
-            self.data_users = data_users
-            self.artworks_sim = artworks_sim
-            self.function_dict = function_dict
-            self.weight_dict = weight_dict
-            self.simUsers = SimilarityUsers()
+        self.data_users = data_users
+        self.artworks_sim = artworks_sim
+        self.function_dict = function_dict
+        self.weight_dict = weight_dict
+        self.simUsers = SimilarityUsers()
 
     def getSimilarityMatrix(self):
         users_matrix = np.zeros((len(self.data_users), len(self.data_users)))

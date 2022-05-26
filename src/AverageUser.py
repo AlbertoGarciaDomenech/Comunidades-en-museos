@@ -147,7 +147,7 @@ class AverageUser:
                     names = info.groupby(atr).size().axes[0]
                     values = info.groupby(atr).size().to_list()
                     # bars = ax.bar(np.sort(names),np.sort(values))
-                    bars = ax.bar(names,values,color="cyan",edgecolor= "blue")
+                    bars = ax.bar(names,values)
                     ax.bar_label(bars, label_type = 'center')
                     plt.xticks(rotation=15)
                     # plt.bar(np.sort(names),np.sort(values), width = 0.5)
