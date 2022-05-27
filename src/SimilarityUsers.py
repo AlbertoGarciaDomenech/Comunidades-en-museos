@@ -16,7 +16,7 @@ COUNTRIES_CSV = "data/countries_of_the_world.csv"
 
 class SimilarityUsers():
 
-    class SimilarityAge(SimilarityFunctionInterface):
+    class SimilarityAgeInterval(SimilarityFunctionInterface):
         """Compute similarity between users (by age)"""
         def __init__(self, data_users, artworks_sim):
             self.data = data_users

@@ -1,6 +1,7 @@
 from src.Singleton import *
 import pandas as pd
 
+# class SimilarityFunctionInterface():
 class SimilarityFunctionInterface(metaclass=Singleton):
     
     def computeSimilarity(self, A, B) -> float:
