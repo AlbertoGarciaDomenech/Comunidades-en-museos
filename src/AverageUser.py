@@ -13,7 +13,7 @@ class AverageUser:
         self.atributes_users = atributes_users
         self.atributes_artworks = atributes_artworks
         self.stats_dicts = {}
-        self.image_path = "cache/"
+        self.image_path = "data/cache/"
     
     def computeAverageUser(self, n_artworks=3):
         self.n_artworks = n_artworks

@@ -24,7 +24,11 @@ class GUI:
   
   def __init__(self, path='data/'):
     self.path = path
+    self.simItemsPath = self.path + 'sim/sim items/'
+    self.simUsersPath = self.path + 'sim/sim users/'
     self.files = [f for f in listdir(self.path) if isfile(join(self.path, f))]
+    self.simItemsFiles = [f for f in listdir(self.simItemsPath) if isfile(join(self.simItemsPath, f))]
+    self.simUsersFiles = [f for f in listdir(self.simUsersPath) if isfile(join(self.simUsersPath, f))]
   
   def inner_classes_list(self, cls):
     return [cls_attribute.__name__ for cls_attribute in cls.__dict__.values() if inspect.isclass(cls_attribute)]
@@ -47,12 +51,10 @@ class GUI:
     self.loadDataComplete = widgets.Label(value="- Users and Items data loaded -")
     self.loadDataTitle = widgets.HTML(value="<h2>Select data files</h2>")
     self.usersDropdown = widgets.Dropdown(options=self.files,
-                                          value='Prado_users_emotions_OnePolarity.csv',
                                           description='Users:',
                                           disabled=False,
                                           )
     self.itemsDropdown = widgets.Dropdown(options=self.files,
-                                          value='Prado_artworks_wikidata.csv',
                                           description='Items:',
                                           disabled=False,
                                           )
@@ -86,7 +88,7 @@ class GUI:
 
   def getItemsSim(self):
     self.items_funcs = {}
-    self.itemsMatrix = pd.read_csv(self.path + self.itemsSimilarityFileDropdown.value, index_col = 0)
+    self.itemsMatrix = pd.read_csv(self.simItemsPath + self.itemsSimilarityFileDropdown.value, index_col = 0)
 
   def addItemsAtribute_create_widgets(self):
     self.items_atribute_list = []
@@ -125,7 +127,7 @@ class GUI:
     self.itemsLastAtribute = widgets.HBox([aux1, aux2, aux3])
 
   def addItemsSimilarityFile(self):
-      self.itemsSimilarityFileDropdown = widgets.Dropdown(options=self.files, value=None, description='Sim file:', disabled=False)
+      self.itemsSimilarityFileDropdown = widgets.Dropdown(options=self.simItemsFiles, value=None, description='Sim file:', disabled=False)
 
   def on_addItemsAtributeButton_clicked(self, change):
     with self.out:
@@ -209,7 +211,7 @@ class GUI:
 
   def getUsersSim(self):
     self.users_funcs = {}
-    self.usersMatrix = pd.read_csv(self.path + self.usersSimilarityFileDropdown.value,index_col=0)
+    self.usersMatrix = pd.read_csv(self.simUsersPath + self.usersSimilarityFileDropdown.value,index_col=0)
 
   def addUsersAtribute_create_widgets(self):
     self.loadUsersAtributeSlider = widgets.FloatSlider(value=0.0, min=0, max=1, step=0.1, disabled=False, readout=False)
@@ -255,7 +257,7 @@ class GUI:
     self.usersLastAtribute = widgets.HBox([aux1, aux2, aux3])
 
   def addUsersSimilarityFile(self):
-      self.usersSimilarityFileDropdown = widgets.Dropdown(options=self.files, value=None, description='Sim file:', disabled=False)
+      self.usersSimilarityFileDropdown = widgets.Dropdown(options=self.simUsersFiles, value=None, description='Sim file:', disabled=False)
 
   def on_addUsersAtributeButton_clicked(self, change):
     self.out.clear_output()
@@ -360,7 +362,7 @@ class GUI:
     self.expl_json = self.AU.returnJSONExplanation()
 
   def explanation(self):
-      path_img = "cache/"
+      path_img = self.path + "cache/"
       info = json.loads(self.expl_json)
       children_cluster = [widgets.Tab() for i in info]
       c = 0
@@ -592,8 +594,8 @@ class GUI:
         display(self.loadDataTitle)
         display(widgets.VBox(
                             [
-                                self.usersDropdown,
                                 self.itemsDropdown,
+                                self.usersDropdown,
                                 self.loadDataButton,
                             ]
                         )
