@@ -133,7 +133,8 @@ class AverageUser:
     def computeInfographics(self):
         dir = os.getcwd() + "\\" + self.image_path
         for f in os.listdir(dir):
-            os.remove(os.path.join(dir, f))
+            if f != '.ipynb_checkpoints':
+              os.remove(os.path.join(dir, f))
         
         if len(self.stats_dicts) != 0:
             for cluster, d in self.stats_dicts.items():

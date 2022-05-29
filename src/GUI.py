@@ -486,41 +486,11 @@ class GUI:
 
     # Añadir ususarios como nodos
     self.UG.addNodesFromUsers(self.users_clustered)
-    # for i in range(len(self.users_clustered)): 
-    #   usr = self.users_clustered.loc[i].copy()
-    #   usr['positive'] = [self.items.loc[self.items['ID'] == id, 'Title'].item() for id in usr['positive']]
-    #   usr['negative'] =  [self.items.loc[self.items['ID'] == id,'Title'].item() for id in usr['negative']]
-    #   usr['mixed'] = [self.items.loc[self.items['ID'] == id,'Title'].item() for id in usr['mixed']]
-    #   title = '<p>' + ''.join('{bold}'.format(bold = '<b>' if self.users_funcs.get(self.users_clustered.columns[e]) is not None else '')
-    #                           + str(self.users_clustered.columns[e]) 
-    #                           + '{endBold} :'.format(endBold = '</b>' if self.users_funcs.get(self.users_clustered.columns[e]) is not None else '') 
-    #                           + str(usr[e]) 
-    #                           + "<br>" for e in range(len(usr.to_list()))) +'</p>'
-    #   self.G.add_nodes_from([(int(usr.userId), {'pos' : 0, 'color' : self.colors[usr.cluster], 'title' : title, 'label' : str(usr.userId)})])
-
-    # Añadir aristas con similitud de usuarios
     self.UG.addEdgesFromSim(self.usersMatrix)
-    # for i in range(len(self.usersMatrix.values)): 
-    #   for j in range(len(self.usersMatrix.values[i])):
-    #     if i != j and self.usersMatrix.values[i][j] > 0:
-    #       a = list(self.G.nodes)[i]
-    #       b = list(self.G.nodes)[j]
-    #       self.G.add_edges_from([(a, b, {'weight' : self.usersMatrix.values[i][j]})])
 
     ## INDIVIDUOS EXPLICADORES (solo si no se ha usado matriz externa)      
     if hasattr(self, 'UM'):
       self.UG.addNodesFromUsers(self.explicators, shape='diamond')
-      # for i in range(len(self.explicators)): # Añadir explicadores como nodos
-        # usr = self.explicators.loc[i].copy()
-        # usr['positive'] = [self.items.loc[self.items['ID'] == id, 'Title'].item() for id in usr['positive']]
-        # usr['negative'] =  [self.items.loc[self.items['ID'] == id,'Title'].item() for id in usr['negative']]
-        # usr['mixed'] = [self.items.loc[self.items['ID'] == id,'Title'].item() for id in usr['mixed']]
-        # title = '<p>' + ''.join('{bold}'.format(bold = '<b>' if self.users_funcs.get(self.explicators.columns[e]) is not None else '')
-        #                         + str(self.explicators.columns[e]) 
-        #                         + '{endBold} :'.format(endBold = '</b>' if self.users_funcs.get(self.explicators.columns[e]) is not None else '') 
-        #                         + str(usr[e]) 
-        #                         + "<br>" for e in range(len(usr.to_list()))) +'</p>'
-        # self.UG.G.add_nodes_from([(usr.userId, {'pos' : 0, 'shape' : 'diamond', 'color' : self.UG.colors[usr.cluster], 'title' : title, 'label' : str(usr.userId)})])
 
       del self.UM
       del Singleton._instances
@@ -552,26 +522,9 @@ class GUI:
       self.explMatrix = self.explMatrix.set_axis(users_expl['userId'].to_list(), axis='index')
 
       self.UG.addEdgesFromSim(self.explMatrix)
-      # for i in range(len(self.explicators)): # Añadir aristas de explicadores
-      #   for j in range(len(self.users_clustered)):
-      #   # if self.explicators.cluster[i] == self.users_clustered.cluster[j]:
-      #     a = self.explicators.userId[i]
-      #     b = list(self.UG.G.nodes)[j]
-      #     weight = self.UM.computeSimilarity(a, self.users_clustered.userId[j])
-      #     if weight > 0:
-      #       self.UG.G.add_edges_from([(a, b, {'weight' : weight})])
 
 
     self.UG.applyForceAtlas2()
-    # pos = { i : (random.random(), random.random()) for i in self.G.nodes()} # Optionally specify positions as a dictionary 
-    # l = fa2.forceatlas2_networkx_layout(self.G, pos, niter=100, edgeWeightInfluence=3, scalingRatio=5.0, gravity=100)
-    # x = { i : (random.random(), random.random()) for i in self.G.nodes()}
-    # y = { i : (random.random(), random.random()) for i in self.G.nodes()}
-    # for k, v in l.items():
-    #   x.update({k : v[0]})
-    #   y.update({k : v[1]})
-    # nx.set_node_attributes(self.G, x , name='x')
-    # nx.set_node_attributes(self.G, y , name='y')
 
     self.net = Network(notebook=True, width='90%')
     self.net.from_nx(self.UG.G)
@@ -585,7 +538,7 @@ class GUI:
     self.net.toggle_physics(False)
     # self.net.width = '75%'
     # self.net.show_buttons(filter_=['physics'])
-    return self.net.show('nodes.html')
+    return self.net.show(self.path + 'cache/' + 'nodes.html')
 
   def showGraph_create_widgets(self):
     self.showGraphTitle = widgets.HTML(value="<h2>Users graph</h2>")
