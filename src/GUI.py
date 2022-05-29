@@ -94,6 +94,7 @@ class GUI:
     self.items_atribute_list = []
     self.default_items_funcs = []
     self.addItemsAtributeComplete = widgets.Label(value="- Items similarity computed -")
+    self.saveSimItemsComplete = widgets.Label(value="- Saved items similarity to ")
     self.addItemsAtributeTitle = widgets.HTML(value="<h2>Add atributes to compute ITEMS similarity</h2>")
     self.addItemsAtributeFileTitle = widgets.HTML(value="<h2>Select a file with the ITEMS similarity matrix</h2>")
 
@@ -109,6 +110,8 @@ class GUI:
 
     self.simItemsFileButton = widgets.Button(description="File selected", button_style='success',)
     self.simItemsFileButton.on_click(self.on_simItemsFileButton_clicked)
+    
+    self.saveSimItems = widgets.Text(value = None,placeholder='Save items sim',description='NameFile:')
 
   def addItemsAtribute(self):
     aux1 = widgets.Dropdown(options=self.items.columns, value=None, description='Atribute:',disabled=False)
@@ -140,6 +143,7 @@ class GUI:
       display(self.itemsLastAtribute)
       display(self.addItemsAtributeButtonBox)
       display(self.loadItemsAtributeButton)
+      display(self.saveSimItems)
       self.items_atribute_list.append(self.itemsLastAtribute)
 
   def on_addItemsAtributeButtonExtra_clicked(self, change):
@@ -153,6 +157,7 @@ class GUI:
       display(self.itemsLastAtribute)
       display(self.addItemsAtributeButtonBox)
       display(self.loadItemsAtributeButton)
+      display(self.saveSimItems)
       self.items_atribute_list.append(self.itemsLastAtribute)    
 
   def on_addItemsAtributeButtonFile_clicked(self, change):
@@ -172,7 +177,12 @@ class GUI:
       print('Computing items similarity...')
       self.computeItemsSim()
       self.out.clear_output()
-      self.completeMessages.children += (self.addItemsAtributeComplete, )
+      if(self.saveSimItems.value != ""):
+            self.itemsMatrix.to_csv(self.simItemsPath + self.saveSimItems.value + ".csv")
+            self.saveSimItemsComplete.value += self.saveSimItems.value + " -" 
+            self.completeMessages.children += (self.addItemsAtributeComplete, self.saveSimItemsComplete)  
+      else:
+        self.completeMessages.children += (self.addItemsAtributeComplete, )
       display(self.completeMessages)
       self.addUsersAtribute_create_widgets()
       display(self.addUsersAtributeTitle)
@@ -233,6 +243,7 @@ class GUI:
     self.default_users_funcs = []
 
     self.addUsersAtributeComplete = widgets.Label(value="- Users similarity computed -")
+    self.saveSimUsersComplete = widgets.Label(value="- Saved users similarity to ")
     self.addUsersAtributeTitle = widgets.HTML(value="<h2>Add atributes to compute USERS similarity</h2>")
     self.addUsersAtributeFileTitle = widgets.HTML(value="<h2>Select a file with the USERS similarity matrix</h2>")
 
@@ -248,6 +259,9 @@ class GUI:
     self.loadUsersAtributeFileButton = widgets.Button(description="File selected", button_style='success',)
     self.loadUsersAtributeFileButton.on_click(self.on_simUsersFileButton_clicked)  
 
+    self.saveSimUsers = widgets.Text(value = None,placeholder='Save users sim',description='NameFile:')
+
+        
   def addUsersAtribute(self):
     aux1 = widgets.Dropdown(options=self.users.columns, value=None, description='Atribute:', disabled=False)
     aux2 = widgets.Dropdown(options=self.users_sim_functions, description='Sim Function::', disabled=False)
@@ -271,6 +285,7 @@ class GUI:
       # display(self.addUsersAtributeButton)
       display(self.addUsersAtributeButtonBox)
       display(self.loadUsersAtributeButton)
+      display(self.saveSimUsers)
       self.users_atribute_list.append(self.usersLastAtribute)
 
   def on_addUsersAtributeButtonFile_clicked(self, change):
@@ -290,7 +305,12 @@ class GUI:
       print('Computing users similarity...')
       self.computeUsersSim()
       self.out.clear_output()
-      self.completeMessages.children += (self.addUsersAtributeComplete, )
+      if(self.saveSimUsers.value != ""):
+        self.usersMatrix.to_csv(self.simUsersPath + self.saveSimUsers.value + ".csv")
+        self.saveSimUsersComplete.value += self.saveSimUsers.value + " -" 
+        self.completeMessages.children += (self.addItemsAtributeComplete, self.saveSimUsersComplete)  
+      else:
+        self.completeMessages.children += (self.addItemsAtributeComplete, )
       display(self.completeMessages)
       self.computeClusters_create_widgets()
       display(self.computeClustersTitle)
