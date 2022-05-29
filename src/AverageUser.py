@@ -50,8 +50,7 @@ class AverageUser:
         return self.users_df
     
     def mostLikedFromCategory(self, atr):
-        ## Artista mas gustado por cluster
-        category = collections.Counter([item for sublist in [self.artworks_info[self.artworks_info['ID'] == artw][atr].to_list() for artw in artworks] for item in sublist])
+        category = collections.Counter([item for sublist in [self.artworks_info[self.artworks_info['ID'] == artw][atr].to_list() for artw in self.artworks_info] for item in sublist])
         if len(artists.most_common(1)) > 0:
             aux_dict["Most " + atr] = [(category.most_common(1)[0][0], artists.most_common(1)[0][1] / len(c) * 100)]
 
@@ -103,6 +102,7 @@ class AverageUser:
                                 if col in self.atributes_artworks:
                                     explanation[cluster] += ("<p>\t\t\t" + str(col) + ": " + str(self.artworks_info[self.artworks_info['ID'] == art][col].to_list()[0])  + "</p>")
         return explanation
+    
     def returnJSONExplanation(self):
         explanation = {}
         if len(self.stats_dicts) != 0:
@@ -131,7 +131,6 @@ class AverageUser:
         return (json.dumps(explanation))
     
     def computeInfographics(self):
-        
         dir = os.getcwd() + "\\" + self.image_path
         for f in os.listdir(dir):
             os.remove(os.path.join(dir, f))
@@ -155,4 +154,3 @@ class AverageUser:
                     plt.savefig(img_name)
                     plt.clf()
                     plt.close()
-        return
