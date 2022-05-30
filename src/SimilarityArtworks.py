@@ -6,8 +6,6 @@ import colorsys
 import math
 from src.SimilarityFunctionInterface import *
 
-# ARTWORKS_CSV = 'data/Prado_artworks_wikidata.csv'
-
 class SimilarityArtworks():
     
     class SimilarityArtist(SimilarityFunctionInterface):

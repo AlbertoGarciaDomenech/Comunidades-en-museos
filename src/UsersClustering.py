@@ -31,7 +31,7 @@ class UsersClustering:
         return kmedoids.labels_
     
     def agglomerativeFromMatrix(self, n_clusters=None, max_clusters=11):
-        """Recieves a similarity matrix, runs Kmedoids algorithm on those elemnts and returns the cluster asigned to each element"""
+        """Recieves a similarity matrix, runs agglomerative algorithm on those elemnts and returns the cluster asigned to each element"""
         if n_clusters is None:
             n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
         agg = AgglomerativeClustering(n_clusters = n_clusters, affinity='precomputed', distance_threshold = None, linkage = 'average')
@@ -41,7 +41,7 @@ class UsersClustering:
         return agg.labels_
 
     def dbscanFromMatrix(self, n_clusters=None, max_clusters=11):
-        """Recieves a similarity matrix, runs Kmedoids algorithm on those elemnts and returns the cluster asigned to each element"""
+        """Recieves a similarity matrix, runs dbscan algorithm on those elemnts and returns the cluster asigned to each element"""
         # if n_clusters is None:
         #     n_clusters = self.daviesBouldinScore(max_clusters=max_clusters)
         dbscan = DBSCAN( metric='precomputed' , eps = .1, min_samples = 7)

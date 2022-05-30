@@ -42,7 +42,7 @@ class SimilarityUsers():
             return 1 - (abs(ageA - ageB) / (self.age_index))
             
     class SimilarityGender(SimilarityFunctionInterface):
-        """Compute similarity between users (by age)"""
+        """Compute similarity between users (by gender)"""
         def __init__(self, data_users, artworks_sim):
             self.data = data_users
 
@@ -53,7 +53,7 @@ class SimilarityUsers():
             return genderA == genderB
 
     class SimilarityCountry(SimilarityFunctionInterface):
-        """Compute similarity between users (by age)"""
+        """Compute similarity between users (by country)"""
         def __init__(self, data_users, artworks_sim):
             self.data = data_users
 
@@ -64,7 +64,7 @@ class SimilarityUsers():
             return countryA == countryB
 
     class SimilarityRegion(SimilarityFunctionInterface):
-        """Compute similarity between users (by age)"""
+        """Compute similarity between users (by region)"""
         def __init__(self, data_users, artworks_sim):
             self.data = data_users
             self.preprocess()
@@ -108,16 +108,6 @@ class SimilarityUsers():
                 sim = 1
             
             return sim
-#             if set(listA) == set(listB):
-#                 sim = 1
-#             else:
-#                 i = 0
-#                 for art1 in listA:
-#                     # max_pos = 0
-#                     for art2 in listB:
-#                         sim += self.artworks_sim[art1][art2]
-#                         i += 1
-#                 sim /= i if i > 0 else 1
             
             
     class SimilarityPolarityNegative(SimilarityFunctionInterface):
