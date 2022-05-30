@@ -28,7 +28,6 @@ class UsersClustering:
         kmedoids = KMedoids(metric='precomputed',method='pam', n_clusters=n_clusters, init='k-medoids++')
         kmedoids.fit(self.data)
         
-        #TODO: Tupla (id, label)
         return kmedoids.labels_
     
     def agglomerativeFromMatrix(self, n_clusters=None, max_clusters=11):
