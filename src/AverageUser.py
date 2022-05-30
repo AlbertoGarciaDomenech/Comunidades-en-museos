@@ -49,11 +49,6 @@ class AverageUser:
         self.users_df = pd.DataFrame(newUsers)
         return self.users_df
     
-    def mostLikedFromCategory(self, atr):
-        category = collections.Counter([item for sublist in [self.artworks_info[self.artworks_info['ID'] == artw][atr].to_list() for artw in self.artworks_info] for item in sublist])
-        if len(artists.most_common(1)) > 0:
-            aux_dict["Most " + atr] = [(category.most_common(1)[0][0], artists.most_common(1)[0][1] / len(c) * 100)]
-
     def printExplanation(self):
         if len(self.stats_dicts) != 0:
             for cluster, d in self.stats_dicts.items():
