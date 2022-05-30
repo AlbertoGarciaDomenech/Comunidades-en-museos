@@ -17,7 +17,7 @@
 ### Unix
 ```bash
 sudo apt-get install python
-pip install jupyter lab
+pip install jupyterlab
 ```
 ## Requisitos externos
 ` pip install -r requirements.txt `
