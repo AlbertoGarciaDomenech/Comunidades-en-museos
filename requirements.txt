@@ -1,0 +1,10 @@
+ForceAtlas2==1.0
+gephistreamer==2.0.3
+ipywidgets==7.7.0
+matplotlib==3.5.2
+networkx==2.8.2
+numpy==1.22.3
+pandas==1.4.2
+pyvis==0.2.1
+scikit_learn==1.1.1
+scikit-learn-extra==0.2.0
