@@ -23,7 +23,7 @@ pip install jupyterlab
 ` pip install -r requirements.txt `
 
 ## Interfaz gráfica
-- Ejecutar JupyterLab desde terminal: `jupyterlab`
+- Ejecutar JupyterLab desde terminal: `jupyter lab`
 - Abrir [`Interfaz.ipynb`](https://github.com/AlbertoGarciaDomenech/Comunidades-en-museos/blob/main/Interfaz.ipynb)
 - Instalar requisitos (solo la primera vez): Ejecutar primera celda de código
 - Usar interfaz gráfica: Ejecutar segunda celda de código y seguir los pasos
