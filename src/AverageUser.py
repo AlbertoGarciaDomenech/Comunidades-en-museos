@@ -126,7 +126,7 @@ class AverageUser:
         return (json.dumps(explanation))
     
     def computeInfographics(self):
-        dir = os.getcwd() + "\\" + self.image_path
+        dir = os.getcwd() + "/" + self.image_path
         for f in os.listdir(dir):
             if f != '.ipynb_checkpoints':
               os.remove(os.path.join(dir, f))
