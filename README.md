@@ -1,5 +1,7 @@
 # TFG: Sistema de detección, explicación y visualización de comunidades
 
+### Ejecutar interfaz directamente: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/AlbertoGarciaDomenech/Comunidades-en-museos/HEAD?labpath=Interfaz.ipynb)
+
 ## Instalar Python y JupyterLab
 (JupyterLab es solo necesario si se desea usar la interfaz gráfica)
 ### Windows
