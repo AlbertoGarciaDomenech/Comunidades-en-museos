@@ -3,7 +3,7 @@ gephistreamer==2.0.3
 ipywidgets==7.7.0
 matplotlib==3.5.2
 networkx==2.*
-numpy==1.2*
+numpy==1.*
 pandas==1.4.2
 pyvis==0.2.1
 scikit_learn==1.1.1
